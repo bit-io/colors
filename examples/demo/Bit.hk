@@ -1,0 +1,7 @@
+[package]
+-> name        => colors-demo
+-> version     => 0.1.0
+-> lang        => h#
+
+[dependencies]
+-> colors => path ../..
