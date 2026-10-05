@@ -1,0 +1,169 @@
+pub fn esc() -> string is
+    return "\x1b["
+end
+
+pub fn reset() -> string is
+    return "\x1b[0m"
+end
+
+;; Wrap `s` in one SGR code ("1", "31", "38;5;208", ...).  Resets that are already
+;; inside `s` (nested styles) re-open this style, so the outer colour survives:
+;;     red("a " + bold("b") + " c")   ->   " c" is still red
+pub fn sgr(code: string, s: string) -> string is
+    if colors_support::level() == 0 is return s end
+    if s == "" is return s end
+    let open: string = "\x1b[" + code + "m"
+    let reopen: string = "\x1b[0m" + open
+    let mut inner: string = string_replace(s, "\x1b[0m", reopen)
+    ;; two resets in a row would re-open an empty style: drop that pointless open
+    inner = string_replace(inner, reopen + "\x1b[0m", "\x1b[0m")
+    ;; a reset at the very end needs no re-open
+    if string_ends_with(inner, reopen) is
+        inner = string_slice(inner, 0, string_len(inner) - string_len(open))
+    end
+    return open + inner + "\x1b[0m"
+end
+
+;; Several codes at once: sgr_all(["1", "31"], "text")
+pub fn sgr_all(codes: [string], s: string) -> string is
+    if colors_support::level() == 0 is return s end
+    let mut joined: string = ""
+    let mut i: int = 0
+    while i < array_len(codes) is
+        if i > 0 is joined = joined + ";" end
+        joined = joined + codes[i]
+        i += 1
+    end
+    return sgr(joined, s)
+end
+
+;; ---- the 16 classic colours ------------------------------------------------
+
+pub fn fg16_code(n: int) -> string is
+    if n < 8 is return to_string(30 + n) end
+    return to_string(90 + (n - 8))
+end
+
+pub fn bg16_code(n: int) -> string is
+    if n < 8 is return to_string(40 + n) end
+    return to_string(100 + (n - 8))
+end
+
+pub fn fg16(n: int, s: string) -> string is
+    return sgr(fg16_code(n), s)
+end
+
+pub fn bg16(n: int, s: string) -> string is
+    return sgr(bg16_code(n), s)
+end
+
+;; ---- 256 colours -----------------------------------------------------------
+
+pub fn fg256(n: int, s: string) -> string is
+    let l: int = colors_support::level()
+    if l == 0 is return s end
+    if l == 1 is return sgr(fg16_code(colors_convert::to_ansi16(colors_convert::red_of(xterm_rgb(n)), colors_convert::green_of(xterm_rgb(n)), colors_convert::blue_of(xterm_rgb(n)))), s) end
+    return sgr("38;5;" + to_string(n), s)
+end
+
+pub fn bg256(n: int, s: string) -> string is
+    let l: int = colors_support::level()
+    if l == 0 is return s end
+    if l == 1 is return sgr(bg16_code(colors_convert::to_ansi16(colors_convert::red_of(xterm_rgb(n)), colors_convert::green_of(xterm_rgb(n)), colors_convert::blue_of(xterm_rgb(n)))), s) end
+    return sgr("48;5;" + to_string(n), s)
+end
+
+;; xterm 256-colour index -> packed RGB (used only for the 16-colour fallback)
+pub fn xterm_rgb(n: int) -> int is
+    if n < 16 is
+        let t: [int] = [0, 8388608, 32768, 8421376, 128, 8388736, 32896, 12632256, 8421504, 16711680, 65280, 16776960, 255, 16711935, 65535, 16777215]
+        return t[n]
+    end
+    if n >= 232 is
+        let v: int = 8 + (n - 232) * 10
+        return colors_convert::pack(v, v, v)
+    end
+    let k: int = n - 16
+    let r: int = k / 36
+    let g: int = (k / 6) % 6
+    let b: int = k % 6
+    let mut rv: int = 0
+    let mut gv: int = 0
+    let mut bv: int = 0
+    if r > 0 is rv = 55 + r * 40 end
+    if g > 0 is gv = 55 + g * 40 end
+    if b > 0 is bv = 55 + b * 40 end
+    return colors_convert::pack(rv, gv, bv)
+end
+
+;; ---- truecolor (with automatic downgrade) ------------------------------------
+
+pub fn fg_rgb(r: int, g: int, b: int, s: string) -> string is
+    let l: int = colors_support::level()
+    if l == 0 is return s end
+    let rr: int = colors_convert::clamp(r)
+    let gg: int = colors_convert::clamp(g)
+    let bb: int = colors_convert::clamp(b)
+    if l >= 3 is
+        return sgr("38;2;" + to_string(rr) + ";" + to_string(gg) + ";" + to_string(bb), s)
+    end
+    if l == 2 is
+        return sgr("38;5;" + to_string(colors_convert::to_ansi256(rr, gg, bb)), s)
+    end
+    return sgr(fg16_code(colors_convert::to_ansi16(rr, gg, bb)), s)
+end
+
+pub fn bg_rgb(r: int, g: int, b: int, s: string) -> string is
+    let l: int = colors_support::level()
+    if l == 0 is return s end
+    let rr: int = colors_convert::clamp(r)
+    let gg: int = colors_convert::clamp(g)
+    let bb: int = colors_convert::clamp(b)
+    if l >= 3 is
+        return sgr("48;2;" + to_string(rr) + ";" + to_string(gg) + ";" + to_string(bb), s)
+    end
+    if l == 2 is
+        return sgr("48;5;" + to_string(colors_convert::to_ansi256(rr, gg, bb)), s)
+    end
+    return sgr(bg16_code(colors_convert::to_ansi16(rr, gg, bb)), s)
+end
+
+pub fn fg_packed(p: int, s: string) -> string is
+    return fg_rgb(colors_convert::red_of(p), colors_convert::green_of(p), colors_convert::blue_of(p), s)
+end
+
+pub fn bg_packed(p: int, s: string) -> string is
+    return bg_rgb(colors_convert::red_of(p), colors_convert::green_of(p), colors_convert::blue_of(p), s)
+end
+
+;; ---- by name / hex -----------------------------------------------------------
+;; Accepts any palette name ("coral", "Dark Orange", "dark_orange"), a classic
+;; terminal colour ("bright_red") or a hex colour ("#ff8800", "f80").  Unknown
+;; names leave the text untouched.
+
+pub fn fg_name(name: string, s: string) -> string is
+    let a: int = colors_palette::ansi_index(name)
+    if a >= 0 is return fg16(a, s) end
+    let p: int = colors_palette::lookup(name)
+    if p >= 0 is return fg_packed(p, s) end
+    let h: int = colors_convert::from_hex(name)
+    if h >= 0 is return fg_packed(h, s) end
+    return s
+end
+
+pub fn bg_name(name: string, s: string) -> string is
+    let a: int = colors_palette::ansi_index(name)
+    if a >= 0 is return bg16(a, s) end
+    let p: int = colors_palette::lookup(name)
+    if p >= 0 is return bg_packed(p, s) end
+    let h: int = colors_convert::from_hex(name)
+    if h >= 0 is return bg_packed(h, s) end
+    return s
+end
+
+;; true when `name` is something fg_name / bg_name understand
+pub fn known(name: string) -> bool is
+    if colors_palette::ansi_index(name) >= 0 is return true end
+    if colors_palette::lookup(name) >= 0 is return true end
+    return colors_convert::from_hex(name) >= 0
+end
