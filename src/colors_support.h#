@@ -1,0 +1,84 @@
+fn getenv(key: string) -> string is
+    let v: string = env_get(key)
+    if v == nil is return "" end
+    return v
+end
+
+fn truthy(v: string) -> bool is
+    return v != "" && v != "0" && v != "false" && v != "off" && v != "no"
+end
+
+fn is_truecolor_terminal() -> bool is
+    let ct: string = getenv("COLORTERM")
+    if ct == "truecolor" || ct == "24bit" is return true end
+    let tp: string = getenv("TERM_PROGRAM")
+    if tp == "iTerm.app" || tp == "vscode" || tp == "WezTerm" || tp == "Hyper" || tp == "ghostty" || tp == "Apple_Terminal_truecolor" is
+        return true
+    end
+    let term: string = getenv("TERM")
+    if string_contains(term, "truecolor") || string_contains(term, "24bit") || string_contains(term, "direct") is return true end
+    if term == "xterm-kitty" || term == "alacritty" || term == "xterm-ghostty" || term == "wezterm" is return true end
+    if getenv("WT_SESSION") != "" is return true end
+    return false
+end
+
+;; The detected colour level (0-3).
+pub fn level() -> int is
+    let forced: string = getenv("COLORS_LEVEL")
+    if forced == "0" is return 0 end
+    if forced == "1" is return 1 end
+    if forced == "2" is return 2 end
+    if forced == "3" is return 3 end
+
+    if getenv("NO_COLOR") != "" is return 0 end
+
+    let forcing: bool = truthy(getenv("FORCE_COLOR")) || truthy(getenv("CLICOLOR_FORCE"))
+    if !forcing && getenv("CLICOLOR") == "0" is return 0 end
+
+    let term: string = getenv("TERM")
+    if !forcing && (term == "" || term == "dumb") is return 0 end
+
+    if is_truecolor_terminal() is return 3 end
+    if string_contains(term, "256") is return 2 end
+    return 1
+end
+
+pub fn enabled() -> bool is
+    return level() > 0
+end
+
+pub fn truecolor() -> bool is
+    return level() >= 3
+end
+
+pub fn level_name() -> string is
+    let l: int = level()
+    if l == 0 is return "none" end
+    if l == 1 is return "16 colors" end
+    if l == 2 is return "256 colors" end
+    return "truecolor"
+end
+
+;; Force a level for the rest of the process (clamped to 0..3).
+pub fn set_level(n: int) is
+    let mut v: int = n
+    if v < 0 is v = 0 end
+    if v > 3 is v = 3 end
+    env_set("COLORS_LEVEL", to_string(v))
+end
+
+;; Colour off (same as NO_COLOR, but only for this process).
+pub fn disable() is
+    set_level(0)
+end
+
+;; Colour on at full quality regardless of what the terminal claims
+;; (handy when piping into `less -R` or a CI log viewer that renders ANSI).
+pub fn force() is
+    set_level(3)
+end
+
+;; Forget any override and go back to auto-detection.
+pub fn auto() is
+    env_set("COLORS_LEVEL", "")
+end
