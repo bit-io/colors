@@ -1,0 +1,104 @@
+pub fn bold(s: string) -> string is
+    return colors_ansi::sgr("1", s)
+end
+
+pub fn dim(s: string) -> string is
+    return colors_ansi::sgr("2", s)
+end
+
+pub fn italic(s: string) -> string is
+    return colors_ansi::sgr("3", s)
+end
+
+pub fn underline(s: string) -> string is
+    return colors_ansi::sgr("4", s)
+end
+
+pub fn blink(s: string) -> string is
+    return colors_ansi::sgr("5", s)
+end
+
+pub fn reverse(s: string) -> string is
+    return colors_ansi::sgr("7", s)
+end
+
+pub fn hidden(s: string) -> string is
+    return colors_ansi::sgr("8", s)
+end
+
+pub fn strike(s: string) -> string is
+    return colors_ansi::sgr("9", s)
+end
+
+pub fn double_underline(s: string) -> string is
+    return colors_ansi::sgr("21", s)
+end
+
+pub fn overline(s: string) -> string is
+    return colors_ansi::sgr("53", s)
+end
+
+;; ---- builder ---------------------------------------------------------------
+;; fg / bg hold a colour name or hex string ("" = leave the terminal default).
+
+struct Style is
+    pub fg: string
+    pub bg: string
+    pub bold: bool
+    pub dim: bool
+    pub italic: bool
+    pub underline: bool
+    pub strike: bool
+    pub reverse: bool
+end
+
+pub fn new() -> Style is
+    return Style { fg: "", bg: "", bold: false, dim: false, italic: false, underline: false, strike: false, reverse: false }
+end
+
+impl Style is
+    fn fg(self, name: string) -> Style is
+        return Style { fg: name, bg: self.bg, bold: self.bold, dim: self.dim, italic: self.italic, underline: self.underline, strike: self.strike, reverse: self.reverse }
+    end
+
+    fn bg(self, name: string) -> Style is
+        return Style { fg: self.fg, bg: name, bold: self.bold, dim: self.dim, italic: self.italic, underline: self.underline, strike: self.strike, reverse: self.reverse }
+    end
+
+    fn bold(self) -> Style is
+        return Style { fg: self.fg, bg: self.bg, bold: true, dim: self.dim, italic: self.italic, underline: self.underline, strike: self.strike, reverse: self.reverse }
+    end
+
+    fn dim(self) -> Style is
+        return Style { fg: self.fg, bg: self.bg, bold: self.bold, dim: true, italic: self.italic, underline: self.underline, strike: self.strike, reverse: self.reverse }
+    end
+
+    fn italic(self) -> Style is
+        return Style { fg: self.fg, bg: self.bg, bold: self.bold, dim: self.dim, italic: true, underline: self.underline, strike: self.strike, reverse: self.reverse }
+    end
+
+    fn underline(self) -> Style is
+        return Style { fg: self.fg, bg: self.bg, bold: self.bold, dim: self.dim, italic: self.italic, underline: true, strike: self.strike, reverse: self.reverse }
+    end
+
+    fn strike(self) -> Style is
+        return Style { fg: self.fg, bg: self.bg, bold: self.bold, dim: self.dim, italic: self.italic, underline: self.underline, strike: true, reverse: self.reverse }
+    end
+
+    fn reverse(self) -> Style is
+        return Style { fg: self.fg, bg: self.bg, bold: self.bold, dim: self.dim, italic: self.italic, underline: self.underline, strike: self.strike, reverse: true }
+    end
+
+    fn paint(self, s: string) -> string is
+        let mut out: string = s
+        if self.reverse is out = colors_ansi::sgr("7", out) end
+        if self.strike is out = colors_ansi::sgr("9", out) end
+        if self.underline is out = colors_ansi::sgr("4", out) end
+        if self.italic is out = colors_ansi::sgr("3", out) end
+        if self.dim is out = colors_ansi::sgr("2", out) end
+        if self.bold is out = colors_ansi::sgr("1", out) end
+        if self.bg != "" is out = colors_ansi::bg_name(self.bg, out) end
+        if self.fg != "" is out = colors_ansi::fg_name(self.fg, out) end
+        return out
+    end
+end
