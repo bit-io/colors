@@ -1,0 +1,5 @@
+use "bit -> colors"
+
+fn main() is
+    colors::showcase::print_all()
+end
