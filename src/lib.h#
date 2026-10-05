@@ -1,1 +1,177 @@
+mod colors_support
+mod colors_convert
+mod colors_palette
+mod colors_ansi
+mod colors_fg
+mod colors_bg
+mod colors_style
+mod colors_theme
+mod colors_gradient
+mod colors_util
+mod colors_showcase
 
+pub fn version() -> string is
+    return "0.1.0"
+end
+
+;; ---- the 8 classic colours + bright variants --------------------------------
+
+pub fn black(s: string) -> string is
+    return colors_ansi::fg16(0, s)
+end
+
+pub fn red(s: string) -> string is
+    return colors_ansi::fg16(1, s)
+end
+
+pub fn green(s: string) -> string is
+    return colors_ansi::fg16(2, s)
+end
+
+pub fn yellow(s: string) -> string is
+    return colors_ansi::fg16(3, s)
+end
+
+pub fn blue(s: string) -> string is
+    return colors_ansi::fg16(4, s)
+end
+
+pub fn magenta(s: string) -> string is
+    return colors_ansi::fg16(5, s)
+end
+
+pub fn cyan(s: string) -> string is
+    return colors_ansi::fg16(6, s)
+end
+
+pub fn white(s: string) -> string is
+    return colors_ansi::fg16(7, s)
+end
+
+pub fn bright_black(s: string) -> string is
+    return colors_ansi::fg16(8, s)
+end
+
+pub fn bright_red(s: string) -> string is
+    return colors_ansi::fg16(9, s)
+end
+
+pub fn bright_green(s: string) -> string is
+    return colors_ansi::fg16(10, s)
+end
+
+pub fn bright_yellow(s: string) -> string is
+    return colors_ansi::fg16(11, s)
+end
+
+pub fn bright_blue(s: string) -> string is
+    return colors_ansi::fg16(12, s)
+end
+
+pub fn bright_magenta(s: string) -> string is
+    return colors_ansi::fg16(13, s)
+end
+
+pub fn bright_cyan(s: string) -> string is
+    return colors_ansi::fg16(14, s)
+end
+
+pub fn bright_white(s: string) -> string is
+    return colors_ansi::fg16(15, s)
+end
+
+;; ---- text attributes ----------------------------------------------------------
+
+pub fn bold(s: string) -> string is
+    return colors_style::bold(s)
+end
+
+pub fn dim(s: string) -> string is
+    return colors_style::dim(s)
+end
+
+pub fn italic(s: string) -> string is
+    return colors_style::italic(s)
+end
+
+pub fn underline(s: string) -> string is
+    return colors_style::underline(s)
+end
+
+pub fn blink(s: string) -> string is
+    return colors_style::blink(s)
+end
+
+pub fn reverse(s: string) -> string is
+    return colors_style::reverse(s)
+end
+
+pub fn strike(s: string) -> string is
+    return colors_style::strike(s)
+end
+
+;; ---- colour by name / value ------------------------------------------------------
+
+;; paint("text", "coral") -- palette name, terminal colour or hex ("#ff8800")
+pub fn paint(s: string, color: string) -> string is
+    return colors_ansi::fg_name(color, s)
+end
+
+;; on("text", "navy") -- background
+pub fn on(s: string, color: string) -> string is
+    return colors_ansi::bg_name(color, s)
+end
+
+pub fn rgb(s: string, r: int, g: int, b: int) -> string is
+    return colors_ansi::fg_rgb(r, g, b, s)
+end
+
+pub fn on_rgb(s: string, r: int, g: int, b: int) -> string is
+    return colors_ansi::bg_rgb(r, g, b, s)
+end
+
+pub fn hex(s: string, code: string) -> string is
+    return colors_ansi::fg_name(code, s)
+end
+
+pub fn on_hex(s: string, code: string) -> string is
+    return colors_ansi::bg_name(code, s)
+end
+
+pub fn ansi256(s: string, n: int) -> string is
+    return colors_ansi::fg256(n, s)
+end
+
+pub fn on_ansi256(s: string, n: int) -> string is
+    return colors_ansi::bg256(n, s)
+end
+
+pub fn hsl(s: string, h: int, sat: int, light: int) -> string is
+    return colors_ansi::fg_packed(colors_convert::from_hsl(h, sat, light), s)
+end
+
+;; ---- shortcuts ------------------------------------------------------------------
+
+pub fn rainbow(s: string) -> string is
+    return colors_gradient::rainbow(s)
+end
+
+pub fn strip(s: string) -> string is
+    return colors_util::strip(s)
+end
+
+pub fn enabled() -> bool is
+    return colors_support::enabled()
+end
+
+pub fn disable() is
+    colors_support::disable()
+end
+
+pub fn force() is
+    colors_support::force()
+end
+
+pub fn color_count() -> int is
+    return colors_palette::count()
+end
