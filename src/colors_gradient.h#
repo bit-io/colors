@@ -1,0 +1,127 @@
+fn packed_of(name: string, fallback: int) -> int is
+    let p: int = colors_palette::lookup(name)
+    if p >= 0 is return p end
+    let h: int = colors_convert::from_hex(name)
+    if h >= 0 is return h end
+    let a: int = colors_palette::ansi_index(name)
+    if a >= 0 is return colors_ansi::xterm_rgb(a) end
+    return fallback
+end
+
+fn is_space(c: string) -> bool is
+    return c == " " || c == "\t" || c == "\n"
+end
+
+;; Foreground gradient from colour `from` to colour `to`.
+pub fn text(s: string, from: string, to: string) -> string is
+    if colors_support::level() == 0 is return s end
+    let a: int = packed_of(from, 16777215)
+    let b: int = packed_of(to, 16777215)
+    let cs: [string] = s.chars()
+    let n: int = array_len(cs)
+    let mut out: string = ""
+    let mut i: int = 0
+    while i < n is
+        if is_space(cs[i]) is
+            out = out + cs[i]
+        else is
+            let mut t: int = 0
+            if n > 1 is t = i * 100 / (n - 1) end
+            out = out + colors_ansi::fg_packed(colors_convert::mix(a, b, t), cs[i])
+        end
+        i += 1
+    end
+    return out
+end
+
+;; Background gradient.
+pub fn background(s: string, from: string, to: string) -> string is
+    if colors_support::level() == 0 is return s end
+    let a: int = packed_of(from, 0)
+    let b: int = packed_of(to, 0)
+    let cs: [string] = s.chars()
+    let n: int = array_len(cs)
+    let mut out: string = ""
+    let mut i: int = 0
+    while i < n is
+        let mut t: int = 0
+        if n > 1 is t = i * 100 / (n - 1) end
+        out = out + colors_ansi::bg_packed(colors_convert::mix(a, b, t), cs[i])
+        i += 1
+    end
+    return out
+end
+
+;; Three-stop gradient: from -> middle -> to.
+pub fn text3(s: string, from: string, middle: string, to: string) -> string is
+    if colors_support::level() == 0 is return s end
+    let a: int = packed_of(from, 16777215)
+    let m: int = packed_of(middle, 16777215)
+    let b: int = packed_of(to, 16777215)
+    let cs: [string] = s.chars()
+    let n: int = array_len(cs)
+    let mut out: string = ""
+    let mut i: int = 0
+    while i < n is
+        if is_space(cs[i]) is
+            out = out + cs[i]
+        else is
+            let mut t: int = 0
+            if n > 1 is t = i * 200 / (n - 1) end
+            let mut p: int = 0
+            if t <= 100 is
+                p = colors_convert::mix(a, m, t)
+            else is
+                p = colors_convert::mix(m, b, t - 100)
+            end
+            out = out + colors_ansi::fg_packed(p, cs[i])
+        end
+        i += 1
+    end
+    return out
+end
+
+;; Full hue wheel across the text.
+pub fn rainbow(s: string) -> string is
+    if colors_support::level() == 0 is return s end
+    let cs: [string] = s.chars()
+    let n: int = array_len(cs)
+    let mut out: string = ""
+    let mut i: int = 0
+    while i < n is
+        if is_space(cs[i]) is
+            out = out + cs[i]
+        else is
+            let hue: int = i * 360 / n
+            out = out + colors_ansi::fg_packed(colors_convert::from_hsl(hue, 100, 50), cs[i])
+        end
+        i += 1
+    end
+    return out
+end
+
+;; A coloured bar of `width` cells going from one colour to another.
+pub fn bar(width: int, from: string, to: string) -> string is
+    return background(string_repeat(" ", width), from, to)
+end
+
+;; ready-made themes
+pub fn fire(s: string) -> string is
+    return text3(s, "crimson", "orangered", "gold")
+end
+
+pub fn ocean(s: string) -> string is
+    return text3(s, "navy", "dodgerblue", "aqua")
+end
+
+pub fn sunset(s: string) -> string is
+    return text3(s, "#ff512f", "#dd2476", "#8e2de2")
+end
+
+pub fn forest(s: string) -> string is
+    return text(s, "darkgreen", "lawngreen")
+end
+
+pub fn pastel(s: string) -> string is
+    return text3(s, "lightpink", "lavender", "lightskyblue")
+end
