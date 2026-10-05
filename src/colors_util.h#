@@ -30,10 +30,59 @@ pub fn is_colored(s: string) -> bool is
     return string_contains(s, "\x1b[")
 end
 
+;; Size in bytes of the UTF-8 character that starts at byte `i`.
+;; (The LLVM backend has no `string.chars()` method, so text is walked with
+;; string_slice + the lead byte instead.)
+pub fn char_size_at(s: string, i: int) -> int is
+    let lead: int = __builtin_str_to_char_code(string_slice(s, i, i + 1))
+    if lead < 192 is return 1 end
+    if lead < 224 is return 2 end
+    if lead < 240 is return 3 end
+    return 4
+end
+
+;; Split text into characters (UTF-8 aware) -- works in every backend.
+pub fn chars(s: string) -> [string] is
+    let n: int = string_len(s)
+    let mut out: [string] = []
+    let mut i: int = 0
+    while i < n is
+        let size: int = char_size_at(s, i)
+        out.push(string_slice(s, i, i + size))
+        i = i + size
+    end
+    return out
+end
+
+;; Number of characters in the text (UTF-8 aware, escape codes NOT removed).
+pub fn char_count(s: string) -> int is
+    let n: int = string_len(s)
+    let mut count: int = 0
+    let mut i: int = 0
+    while i < n is
+        i = i + char_size_at(s, i)
+        count += 1
+    end
+    return count
+end
+
 ;; Number of characters you actually see (escape codes removed, UTF-8 aware).
 pub fn visible_len(s: string) -> int is
-    let plain: string = strip(s)
-    return array_len(plain.chars())
+    return char_count(strip(s))
+end
+
+;; Cut to at most `width` visible characters.  Colour codes are dropped from the
+;; result when the text has to be shortened, so no escape sequence is ever split.
+pub fn truncate(s: string, width: int) -> string is
+    if visible_len(s) <= width is return s end
+    let cs: [string] = chars(strip(s))
+    let mut out: string = ""
+    let mut i: int = 0
+    while i < width && i < array_len(cs) is
+        out = out + cs[i]
+        i += 1
+    end
+    return out
 end
 
 ;; Pad to `width` visible characters (colour codes do not count).
