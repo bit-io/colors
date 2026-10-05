@@ -56,10 +56,10 @@ end
 | po nazwie / hexie | `colors::paint(s, "coral")`, `colors::on(s, "navy")`, `colors::hex(s, "#ff8000")`, `colors::on_hex(s, "f80")` |
 | RGB / HSL / ANSI-256 | `colors::rgb(s, r, g, b)`, `colors::on_rgb(...)`, `colors::hsl(s, h, s, l)`, `colors::ansi256(s, n)` |
 | builder | `colors::style::new().fg("coral").bg("navy").bold().underline().paint(s)` |
-| gradienty | `colors::gradient::text(s, "crimson", "gold")`, `text3`, `background`, `bar(width, a, b)`, `rainbow` |
+| gradienty | `colors::gradient::text(s, "crimson", "gold")`, `text3`, `multi(s, ["red", "gold", …])`, `background`, `bar(width, a, b)`, `rainbow`, `rainbow_from(s, offset)`, `lines(s, a, b)` (pionowy, po liniach) |
 | motywy gradientów | `colors::gradient::fire` `ocean` `sunset` `forest` `pastel` |
 | komunikaty CLI | `colors::theme::success` `error` `warning` `info` `hint` `debug` `step` `title` `muted` `link` `code` `badge` |
-| tekst z kolorami | `colors::strip(s)`, `colors::util::visible_len(s)`, `pad_right`, `pad_left`, `center` |
+| tekst z kolorami | `colors::strip(s)`, `colors::util::visible_len(s)`, `chars(s)`, `char_count(s)`, `truncate(s, n)`, `pad_right`, `pad_left`, `center` |
 | konwersje | `colors::convert::from_hex` `to_hex` `from_hsl` `mix` `lighten` `darken` `invert` `to_ansi256` `to_ansi16` |
 | wykrywanie | `colors::support::level()` (0 brak · 1 = 16 · 2 = 256 · 3 = truecolor), `enabled()`, `set_level(n)`, `disable()`, `force()`, `auto()` |
 | paleta | `colors::palette::all_names()`, `lookup(name)`, `colors::color_count()` |
