@@ -1,1 +1,68 @@
+pub fn success(msg: string) -> string is
+    return colors_ansi::fg16(2, "✔") + " " + msg
+end
 
+pub fn error(msg: string) -> string is
+    return colors_ansi::fg16(1, "✖") + " " + colors_ansi::fg16(1, msg)
+end
+
+pub fn warning(msg: string) -> string is
+    return colors_ansi::fg16(3, "⚠") + " " + colors_ansi::fg16(3, msg)
+end
+
+pub fn info(msg: string) -> string is
+    return colors_ansi::fg16(6, "ℹ") + " " + msg
+end
+
+pub fn hint(msg: string) -> string is
+    return colors_ansi::fg16(5, "➜") + " " + colors_ansi::sgr("2", msg)
+end
+
+pub fn debug(msg: string) -> string is
+    return colors_ansi::fg16(8, "●") + " " + colors_ansi::fg16(8, msg)
+end
+
+pub fn step(n: int, total: int, msg: string) -> string is
+    return colors_ansi::sgr("2", "[" + to_string(n) + "/" + to_string(total) + "]") + " " + msg
+end
+
+pub fn title(msg: string) -> string is
+    return colors_ansi::sgr("1;4", msg)
+end
+
+pub fn muted(msg: string) -> string is
+    return colors_ansi::sgr("2", msg)
+end
+
+pub fn link(url: string) -> string is
+    return colors_ansi::sgr("4;36", url)
+end
+
+pub fn code(text: string) -> string is
+    return colors_ansi::bg16(0, colors_ansi::fg16(15, " " + text + " "))
+end
+
+pub fn key(text: string) -> string is
+    return colors_ansi::sgr("1;33", text)
+end
+
+;; A solid label: badge("OK", "green") -> white-on-green " OK "
+pub fn badge(label: string, color: string) -> string is
+    return colors_ansi::bg_name(color, colors_ansi::sgr("1;97", " " + label + " "))
+end
+
+pub fn ok_badge() -> string is
+    return badge("OK", "green")
+end
+
+pub fn fail_badge() -> string is
+    return badge("FAIL", "red")
+end
+
+pub fn warn_badge() -> string is
+    return colors_ansi::bg16(3, colors_ansi::sgr("1;30", " WARN "))
+end
+
+pub fn info_badge() -> string is
+    return badge("INFO", "blue")
+end
