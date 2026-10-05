@@ -1,0 +1,39 @@
+use "bit -> colors"
+
+fn main() is
+    ;; 16 terminal colours + attributes
+    write(colors::red("red") + " " + colors::green("green") + " " + colors::blue("blue") + " " + colors::bold("bold") + " " + colors::underline("underline"))
+
+    ;; 164 ready-made colours: colors::fg::<name> / colors::bg::<name>
+    write(colors::fg::coral("coral") + " " + colors::fg::gold("gold") + " " + colors::fg::dodgerblue("dodgerblue") + " " + colors::fg::rebeccapurple("rebeccapurple"))
+    write(colors::bg::navy(colors::fg::gold(" gold on navy ")))
+
+    ;; by name, hex, rgb, hsl
+    write(colors::paint("by name", "dark orange") + " | " + colors::hex("by hex", "#00c2a8") + " | " + colors::rgb("by rgb", 255, 105, 180) + " | " + colors::hsl("by hsl", 200, 90, 55))
+
+    ;; nesting keeps the outer colour
+    write(colors::red("error: " + colors::bold("file not found") + " (code 2)"))
+
+    ;; builder
+    let warn = colors::style::new().fg("orange").bold().underline()
+    write(warn.paint("custom style"))
+
+    ;; gradients
+    write(colors::gradient::rainbow("rainbow text all the way"))
+    write(colors::gradient::sunset("sunset gradient"))
+    write(colors::gradient::text("from crimson to gold", "crimson", "gold"))
+    write(colors::gradient::bar(40, "#ff512f", "#8e2de2"))
+
+    ;; CLI message styles
+    write(colors::theme::success("build finished"))
+    write(colors::theme::error("file not found"))
+    write(colors::theme::warning("deprecated option"))
+    write(colors::theme::info("3 files changed"))
+    write(colors::theme::hint("try `bit install`"))
+    write(colors::theme::ok_badge() + " " + colors::theme::warn_badge() + " " + colors::theme::fail_badge())
+
+    ;; helpers for coloured text
+    let line: string = colors::red("abc")
+    write("visible length: " + to_string(colors::util::visible_len(line)) + ", stripped: " + colors::strip(line))
+    write("detected: " + colors::support::level_name())
+end
