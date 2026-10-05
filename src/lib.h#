@@ -156,6 +156,10 @@ pub fn rainbow(s: string) -> string is
     return colors_gradient::rainbow(s)
 end
 
+pub fn gradient(s: string, from: string, to: string) -> string is
+    return colors_gradient::text(s, from, to)
+end
+
 pub fn strip(s: string) -> string is
     return colors_util::strip(s)
 end
