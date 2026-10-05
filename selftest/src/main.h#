@@ -142,6 +142,37 @@ fn gradient_endpoints() is
 end
 
 #[test]
+fn utf8_chars_and_truncate() is
+    let cs: [string] = colors::util::chars("aé€😀z")
+    assert(array_len(cs) == 5, "chars count")
+    assert(cs[1] == "é", "2-byte char")
+    assert(cs[2] == "€", "3-byte char")
+    assert(cs[3] == "😀", "4-byte char")
+    assert(colors::util::char_count("aé€😀z") == 5, "char_count")
+    assert(array_len(colors::util::chars("")) == 0, "chars of empty")
+    assert(colors::util::truncate("héllo", 3) == "hél", "truncate")
+    assert(colors::util::truncate("hi", 5) == "hi", "truncate short")
+end
+
+#[test]
+fn gradient_utf8_and_extras() is
+    colors::support::set_level(3)
+    assert(colors::strip(colors::gradient::text("zażółć", "red", "blue")) == "zażółć", "gradient keeps utf-8")
+    let m: string = colors::gradient::multi("abc", ["#ff0000", "#00ff00", "#0000ff"])
+    assert(m == esc("38;2;255;0;0") + "a" + esc("0") + esc("38;2;0;255;0") + "b" + esc("0") + esc("38;2;0;0;255") + "c" + esc("0"), "multi")
+    assert(colors::gradient::multi("ab", ["#ff0000"]) == esc("38;2;255;0;0") + "ab" + esc("0"), "multi one stop")
+    let none: [string] = []
+    assert(colors::gradient::multi("ab", none) == "ab", "multi no stops")
+    assert(colors::strip(colors::gradient::rainbow_from("hello", 90)) == "hello", "rainbow_from")
+    assert(colors::gradient::rainbow_from("abc", 0) == colors::gradient::rainbow("abc"), "offset 0 = rainbow")
+    let l: string = colors::gradient::lines("a\nb", "#ff0000", "#0000ff")
+    assert(l == esc("38;2;255;0;0") + "a" + esc("0") + "\n" + esc("38;2;0;0;255") + "b" + esc("0"), "lines")
+    colors::support::set_level(0)
+    assert(colors::gradient::multi("ab", ["red", "blue"]) == "ab", "multi plain")
+    assert(colors::gradient::lines("a\nb", "red", "blue") == "a\nb", "lines plain")
+end
+
+#[test]
 fn style_builder() is
     colors::support::set_level(3)
     let s = colors::style::new().fg("coral").bold()
@@ -186,6 +217,8 @@ fn main() is
     palette_has_enough_colors()
     every_name_in_the_palette_paints()
     gradient_endpoints()
+    utf8_chars_and_truncate()
+    gradient_utf8_and_extras()
     style_builder()
     theme_messages()
     level_overrides()
