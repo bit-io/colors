@@ -22,6 +22,9 @@ fn main() is
     write(colors::gradient::rainbow("rainbow text all the way"))
     write(colors::gradient::sunset("sunset gradient"))
     write(colors::gradient::text("from crimson to gold", "crimson", "gold"))
+    write(colors::gradient::multi("multi-stop gradient with żółć", ["crimson", "gold", "lime", "dodgerblue"]))
+    write(colors::gradient::rainbow_from("rainbow shifted by 120 degrees", 120))
+    write(colors::gradient::lines("line one\nline two\nline three", "gold", "crimson"))
     write(colors::gradient::bar(40, "#ff512f", "#8e2de2"))
 
     ;; CLI message styles
