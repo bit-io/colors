@@ -17,7 +17,7 @@ pub fn text(s: string, from: string, to: string) -> string is
     if colors_support::level() == 0 is return s end
     let a: int = packed_of(from, 16777215)
     let b: int = packed_of(to, 16777215)
-    let cs: [string] = s.chars()
+    let cs: [string] = colors_util::chars(s)
     let n: int = array_len(cs)
     let mut out: string = ""
     let mut i: int = 0
@@ -39,7 +39,7 @@ pub fn background(s: string, from: string, to: string) -> string is
     if colors_support::level() == 0 is return s end
     let a: int = packed_of(from, 0)
     let b: int = packed_of(to, 0)
-    let cs: [string] = s.chars()
+    let cs: [string] = colors_util::chars(s)
     let n: int = array_len(cs)
     let mut out: string = ""
     let mut i: int = 0
@@ -58,7 +58,7 @@ pub fn text3(s: string, from: string, middle: string, to: string) -> string is
     let a: int = packed_of(from, 16777215)
     let m: int = packed_of(middle, 16777215)
     let b: int = packed_of(to, 16777215)
-    let cs: [string] = s.chars()
+    let cs: [string] = colors_util::chars(s)
     let n: int = array_len(cs)
     let mut out: string = ""
     let mut i: int = 0
@@ -81,10 +81,11 @@ pub fn text3(s: string, from: string, middle: string, to: string) -> string is
     return out
 end
 
-;; Full hue wheel across the text.
-pub fn rainbow(s: string) -> string is
+;; Hue wheel starting `offset` degrees round the wheel -- animate by calling it
+;; again with a growing offset.
+pub fn rainbow_from(s: string, offset: int) -> string is
     if colors_support::level() == 0 is return s end
-    let cs: [string] = s.chars()
+    let cs: [string] = colors_util::chars(s)
     let n: int = array_len(cs)
     let mut out: string = ""
     let mut i: int = 0
@@ -92,8 +93,63 @@ pub fn rainbow(s: string) -> string is
         if is_space(cs[i]) is
             out = out + cs[i]
         else is
-            let hue: int = i * 360 / n
+            let hue: int = ((i * 360 / n + offset) % 360 + 360) % 360
             out = out + colors_ansi::fg_packed(colors_convert::from_hsl(hue, 100, 50), cs[i])
+        end
+        i += 1
+    end
+    return out
+end
+
+;; Full hue wheel across the text.
+pub fn rainbow(s: string) -> string is
+    return rainbow_from(s, 0)
+end
+
+;; Gradient through any number of colours: multi("text", ["red", "gold", "lime", "blue"]).
+pub fn multi(s: string, stops: [string]) -> string is
+    if colors_support::level() == 0 is return s end
+    let k: int = array_len(stops)
+    if k == 0 is return s end
+    if k == 1 is return colors_ansi::fg_packed(packed_of(stops[0], 16777215), s) end
+    let cs: [string] = colors_util::chars(s)
+    let n: int = array_len(cs)
+    let mut out: string = ""
+    let mut i: int = 0
+    while i < n is
+        if is_space(cs[i]) is
+            out = out + cs[i]
+        else is
+            let mut t: int = 0
+            if n > 1 is t = i * 100 * (k - 1) / (n - 1) end
+            let mut seg: int = t / 100
+            if seg > k - 2 is seg = k - 2 end
+            let local: int = t - seg * 100
+            let a: int = packed_of(stops[seg], 16777215)
+            let b: int = packed_of(stops[seg + 1], 16777215)
+            out = out + colors_ansi::fg_packed(colors_convert::mix(a, b, local), cs[i])
+        end
+        i += 1
+    end
+    return out
+end
+
+;; Vertical gradient: every line of a multi-line text gets one colour,
+;; going from `from` (first line) to `to` (last line).
+pub fn lines(s: string, from: string, to: string) -> string is
+    if colors_support::level() == 0 is return s end
+    let a: int = packed_of(from, 16777215)
+    let b: int = packed_of(to, 16777215)
+    let parts: [string] = s.split("\n")
+    let n: int = array_len(parts)
+    let mut out: string = ""
+    let mut i: int = 0
+    while i < n is
+        let mut t: int = 0
+        if n > 1 is t = i * 100 / (n - 1) end
+        if i > 0 is out = out + "\n" end
+        if string_len(parts[i]) > 0 is
+            out = out + colors_ansi::fg_packed(colors_convert::mix(a, b, t), parts[i])
         end
         i += 1
     end
