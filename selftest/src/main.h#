@@ -1,0 +1,193 @@
+use "bit -> colors"
+
+;; Run with `bit test`.  Every test pins the colour level first, so results do not
+;; depend on the terminal the tests run in.
+
+fn esc(code: string) -> string is
+    return "\x1b[" + code + "m"
+end
+
+#[test]
+fn basic_colors() is
+    colors::support::set_level(1)
+    assert(colors::red("x") == esc("31") + "x" + esc("0"), "red")
+    assert(colors::green("x") == esc("32") + "x" + esc("0"), "green")
+    assert(colors::bright_blue("x") == esc("94") + "x" + esc("0"), "bright_blue")
+    assert(colors::bold("x") == esc("1") + "x" + esc("0"), "bold")
+end
+
+#[test]
+fn no_color_level_returns_plain_text() is
+    colors::support::set_level(0)
+    assert(colors::red("x") == "x", "red plain")
+    assert(colors::fg::coral("x") == "x", "coral plain")
+    assert(colors::bg::navy("x") == "x", "navy plain")
+    assert(colors::gradient::rainbow("abc") == "abc", "rainbow plain")
+    assert(colors::paint("x", "coral") == "x", "paint plain")
+end
+
+#[test]
+fn truecolor_named() is
+    colors::support::set_level(3)
+    assert(colors::fg::coral("x") == esc("38;2;255;127;80") + "x" + esc("0"), "coral fg")
+    assert(colors::bg::navy("x") == esc("48;2;0;0;128") + "x" + esc("0"), "navy bg")
+    assert(colors::fg::rebeccapurple("x") == esc("38;2;102;51;153") + "x" + esc("0"), "rebeccapurple")
+end
+
+#[test]
+fn ansi256_downgrade() is
+    colors::support::set_level(2)
+    assert(colors::fg::coral("x") == esc("38;5;210") + "x" + esc("0"), "coral 256")
+    assert(colors::rgb("x", 0, 0, 0) == esc("38;5;16") + "x" + esc("0"), "black 256")
+    assert(colors::rgb("x", 255, 255, 255) == esc("38;5;231") + "x" + esc("0"), "white 256")
+end
+
+#[test]
+fn ansi16_downgrade() is
+    colors::support::set_level(1)
+    assert(colors::rgb("x", 255, 0, 0) == esc("91") + "x" + esc("0"), "red 16")
+    assert(colors::rgb("x", 0, 0, 0) == esc("30") + "x" + esc("0"), "black 16")
+    assert(colors::rgb("x", 255, 255, 255) == esc("97") + "x" + esc("0"), "white 16")
+end
+
+#[test]
+fn background_codes() is
+    colors::support::set_level(1)
+    assert(colors::bg::red("x") == esc("41") + "x" + esc("0"), "bg red")
+    assert(colors::bg::bright_green("x") == esc("102") + "x" + esc("0"), "bg bright green")
+end
+
+#[test]
+fn paint_by_name_and_hex() is
+    colors::support::set_level(3)
+    assert(colors::paint("x", "coral") == colors::fg::coral("x"), "paint coral")
+    assert(colors::paint("x", "Dark Orange") == colors::fg::darkorange("x"), "paint spaced")
+    assert(colors::paint("x", "dark_orange") == colors::fg::darkorange("x"), "paint snake")
+    assert(colors::paint("x", "#ff8000") == esc("38;2;255;128;0") + "x" + esc("0"), "paint hex")
+    assert(colors::paint("x", "f80") == esc("38;2;255;136;0") + "x" + esc("0"), "paint short hex")
+    assert(colors::on("x", "navy") == colors::bg::navy("x"), "on navy")
+    assert(colors::paint("x", "no-such-colour") == "x", "unknown stays plain")
+end
+
+#[test]
+fn nested_styles_keep_outer_colour() is
+    colors::support::set_level(1)
+    let s: string = colors::red("a " + colors::bold("b") + " c")
+    let expect: string = esc("31") + "a " + esc("1") + "b" + esc("0") + esc("31") + " c" + esc("0")
+    assert(s == expect, "nested")
+end
+
+#[test]
+fn strip_and_visible_len() is
+    colors::support::set_level(3)
+    let s: string = colors::bold(colors::fg::coral("héllo")) + " " + colors::red("x")
+    assert(colors::strip(s) == "héllo x", "strip")
+    assert(colors::util::visible_len(s) == 7, "visible_len")
+    assert(colors::util::is_colored(s), "is_colored")
+    assert(!colors::util::is_colored("plain"), "plain is not coloured")
+    assert(colors::util::pad_right(colors::red("ab"), 5) == colors::red("ab") + "   ", "pad_right")
+    assert(colors::util::center("ab", 6) == "  ab  ", "center")
+end
+
+#[test]
+fn convert_hex_hsl_mix() is
+    assert(colors::convert::from_hex("#ff8000") == 16744448, "from_hex")
+    assert(colors::convert::from_hex("f80") == 16746496, "from_hex short")
+    assert(colors::convert::from_hex("#xyz123") == -1, "bad hex")
+    assert(colors::convert::from_hex("#12") == -1, "bad length")
+    assert(colors::convert::to_hex(16744448) == "#ff8000", "to_hex")
+    assert(colors::convert::from_hsl(0, 100, 50) == 16711680, "hsl red")
+    assert(colors::convert::from_hsl(120, 100, 50) == 65280, "hsl green")
+    assert(colors::convert::from_hsl(240, 100, 50) == 255, "hsl blue")
+    assert(colors::convert::from_hsl(0, 0, 100) == 16777215, "hsl white")
+    assert(colors::convert::from_hsl(0, 0, 0) == 0, "hsl black")
+    assert(colors::convert::mix(0, 16777215, 50) == 8355711, "mix")
+    assert(colors::convert::lighten(0, 100) == 16777215, "lighten")
+    assert(colors::convert::darken(16777215, 100) == 0, "darken")
+    assert(colors::convert::invert(0) == 16777215, "invert")
+end
+
+#[test]
+fn palette_has_enough_colors() is
+    assert(colors::color_count() >= 100, "at least 100 colours")
+    assert(array_len(colors::palette::all_names()) == colors::color_count(), "names list matches count")
+    assert(colors::palette::lookup("coral") == 16744272, "lookup coral")
+    assert(colors::palette::lookup("CornFlower_Blue") == 6591981, "lookup normalised")
+    assert(colors::palette::lookup("nope") == -1, "lookup unknown")
+    assert(colors::palette::ansi_index("bright_red") == 9, "ansi index")
+end
+
+#[test]
+fn every_name_in_the_palette_paints() is
+    colors::support::set_level(3)
+    let names: [string] = colors::palette::all_names()
+    let mut i: int = 0
+    while i < array_len(names) is
+        let fg: string = colors::paint("x", names[i])
+        let bg: string = colors::on("x", names[i])
+        assert(string_starts_with(fg, "\x1b["), "fg " + names[i])
+        assert(string_starts_with(bg, "\x1b["), "bg " + names[i])
+        assert(colors::strip(fg) == "x", "strip fg " + names[i])
+        i += 1
+    end
+end
+
+#[test]
+fn gradient_endpoints() is
+    colors::support::set_level(3)
+    let g: string = colors::gradient::text("ab", "#ff0000", "#0000ff")
+    assert(g == esc("38;2;255;0;0") + "a" + esc("0") + esc("38;2;0;0;255") + "b" + esc("0"), "gradient")
+    assert(colors::strip(colors::gradient::rainbow("hello world")) == "hello world", "rainbow keeps text")
+    assert(colors::strip(colors::gradient::fire("hot")) == "hot", "fire keeps text")
+end
+
+#[test]
+fn style_builder() is
+    colors::support::set_level(3)
+    let s = colors::style::new().fg("coral").bold()
+    assert(s.paint("x") == esc("38;2;255;127;80") + esc("1") + "x" + esc("0") + esc("0"), "builder")
+    let plain = colors::style::new()
+    assert(plain.paint("x") == "x", "empty style")
+end
+
+#[test]
+fn theme_messages() is
+    colors::support::set_level(0)
+    assert(colors::theme::success("ok") == "✔ ok", "success")
+    assert(colors::theme::error("bad") == "✖ bad", "error")
+    assert(colors::theme::warning("hm") == "⚠ hm", "warning")
+    assert(colors::theme::badge("OK", "green") == " OK ", "badge plain")
+end
+
+#[test]
+fn level_overrides() is
+    colors::support::set_level(7)
+    assert(colors::support::level() == 3, "clamped high")
+    colors::support::set_level(0 - 4)
+    assert(colors::support::level() == 0, "clamped low")
+    colors::support::disable()
+    assert(!colors::enabled(), "disabled")
+    colors::support::force()
+    assert(colors::enabled(), "forced")
+    assert(colors::support::truecolor(), "force is truecolor")
+end
+
+fn main() is
+    basic_colors()
+    no_color_level_returns_plain_text()
+    truecolor_named()
+    ansi256_downgrade()
+    ansi16_downgrade()
+    background_codes()
+    paint_by_name_and_hex()
+    nested_styles_keep_outer_colour()
+    strip_and_visible_len()
+    convert_hex_hsl_mix()
+    palette_has_enough_colors()
+    every_name_in_the_palette_paints()
+    gradient_endpoints()
+    style_builder()
+    theme_messages()
+    level_overrides()
+    write("all tests passed")
+end
