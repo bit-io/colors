@@ -1,1 +1,18 @@
+[package]
+-> name        => colors
+-> version     => 0.1.0
+-> description => Terminal colours for H#: 160+ ready-made colours, styles, gradients and themes
+-> authors     => ["Bit Developers"]
+-> license     => MIT
+-> keywords     => ["color", "colour", "ansi", "terminal", "cli", "style"]
+-> readme      => README.md
+-> lang        => h#
 
+[edition]
+-> edition => 2026
+
+[build]
+-> link => static
+
+[lib]
+-> output => hlib
