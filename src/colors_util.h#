@@ -1,0 +1,58 @@
+pub fn strip(s: string) -> string is
+    let n: int = string_len(s)
+    let mut out: string = ""
+    let mut i: int = 0
+    let mut start: int = 0
+    while i < n is
+        if string_slice(s, i, i + 1) == "\x1b" && i + 1 < n && string_slice(s, i + 1, i + 2) == "[" is
+            out = out + string_slice(s, start, i)
+            i = i + 2
+            ;; parameter / intermediate bytes 0x20-0x3f, then one final byte 0x40-0x7e
+            let mut done: bool = false
+            while i < n && !done is
+                let c: string = string_slice(s, i, i + 1)
+                i += 1
+                if string_find("@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", c) >= 0 is
+                    done = true
+                end
+            end
+            start = i
+        else is
+            i += 1
+        end
+    end
+    out = out + string_slice(s, start, n)
+    return out
+end
+
+;; true when the text contains an escape sequence
+pub fn is_colored(s: string) -> bool is
+    return string_contains(s, "\x1b[")
+end
+
+;; Number of characters you actually see (escape codes removed, UTF-8 aware).
+pub fn visible_len(s: string) -> int is
+    let plain: string = strip(s)
+    return array_len(plain.chars())
+end
+
+;; Pad to `width` visible characters (colour codes do not count).
+pub fn pad_right(s: string, width: int) -> string is
+    let n: int = visible_len(s)
+    if n >= width is return s end
+    return s + string_repeat(" ", width - n)
+end
+
+pub fn pad_left(s: string, width: int) -> string is
+    let n: int = visible_len(s)
+    if n >= width is return s end
+    return string_repeat(" ", width - n) + s
+end
+
+pub fn center(s: string, width: int) -> string is
+    let n: int = visible_len(s)
+    if n >= width is return s end
+    let total: int = width - n
+    let left: int = total / 2
+    return string_repeat(" ", left) + s + string_repeat(" ", total - left)
+end
