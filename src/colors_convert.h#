@@ -1,0 +1,179 @@
+pub fn clamp(v: int) -> int is
+    if v < 0 is return 0 end
+    if v > 255 is return 255 end
+    return v
+end
+
+pub fn pack(r: int, g: int, b: int) -> int is
+    return clamp(r) * 65536 + clamp(g) * 256 + clamp(b)
+end
+
+pub fn red_of(p: int) -> int is
+    return (p / 65536) % 256
+end
+
+pub fn green_of(p: int) -> int is
+    return (p / 256) % 256
+end
+
+pub fn blue_of(p: int) -> int is
+    return p % 256
+end
+
+fn hex_val(ch: string) -> int is
+    return string_find("0123456789abcdef", string_lower(ch))
+end
+
+;; "#ff8800", "ff8800", "#f80" or "f80" -> packed int; -1 when it is not a hex colour.
+pub fn from_hex(text: string) -> int is
+    let mut h: string = string_trim(text)
+    if string_starts_with(h, "#") is h = string_slice(h, 1, string_len(h)) end
+    let n: int = string_len(h)
+    if n != 3 && n != 6 is return -1 end
+    let mut digits: [int] = []
+    let mut i: int = 0
+    while i < n is
+        let d: int = hex_val(string_slice(h, i, i + 1))
+        if d < 0 is return -1 end
+        digits = array_push(digits, d)
+        i += 1
+    end
+    if n == 3 is
+        return pack(digits[0] * 17, digits[1] * 17, digits[2] * 17)
+    end
+    return pack(digits[0] * 16 + digits[1], digits[2] * 16 + digits[3], digits[4] * 16 + digits[5])
+end
+
+fn hex_digit(n: int) -> string is
+    return string_slice("0123456789abcdef", n, n + 1)
+end
+
+fn hex_byte(n: int) -> string is
+    let v: int = clamp(n)
+    return hex_digit(v / 16) + hex_digit(v % 16)
+end
+
+;; packed int -> "#rrggbb"
+pub fn to_hex(p: int) -> string is
+    return "#" + hex_byte(red_of(p)) + hex_byte(green_of(p)) + hex_byte(blue_of(p))
+end
+
+;; HSL (h 0-360, s 0-100, l 0-100) -> packed int.
+pub fn from_hsl(h: int, s: int, l: int) -> int is
+    let mut ss: int = s
+    let mut ll: int = l
+    if ss < 0 is ss = 0 end
+    if ss > 100 is ss = 100 end
+    if ll < 0 is ll = 0 end
+    if ll > 100 is ll = 100 end
+    let mut hp: int = h % 360
+    if hp < 0 is hp = hp + 360 end
+
+    let mut two_l: int = 2 * ll - 100
+    if two_l < 0 is two_l = 0 - two_l end
+    let c: int = (100 - two_l) * ss              ;; chroma, 0..10000
+    let h6: int = hp * 1000 / 60                 ;; hue / 60, scaled by 1000
+    let mut t: int = (h6 % 2000) - 1000
+    if t < 0 is t = 0 - t end
+    let x: int = c * (1000 - t) / 1000
+    let m: int = ll * 100 - c / 2
+
+    let mut r1: int = 0
+    let mut g1: int = 0
+    let mut b1: int = 0
+    let sector: int = hp / 60
+    if sector == 0 is
+        r1 = c
+        g1 = x
+    else if sector == 1 is
+        r1 = x
+        g1 = c
+    else if sector == 2 is
+        g1 = c
+        b1 = x
+    else if sector == 3 is
+        g1 = x
+        b1 = c
+    else if sector == 4 is
+        r1 = x
+        b1 = c
+    else is
+        r1 = c
+        b1 = x
+    end
+    return pack((r1 + m) * 255 / 10000, (g1 + m) * 255 / 10000, (b1 + m) * 255 / 10000)
+end
+
+;; Linear mix of two packed colours; t = 0 gives a, t = 100 gives b.
+pub fn mix(a: int, b: int, t: int) -> int is
+    let mut tt: int = t
+    if tt < 0 is tt = 0 end
+    if tt > 100 is tt = 100 end
+    let r: int = (red_of(a) * (100 - tt) + red_of(b) * tt) / 100
+    let g: int = (green_of(a) * (100 - tt) + green_of(b) * tt) / 100
+    let bl: int = (blue_of(a) * (100 - tt) + blue_of(b) * tt) / 100
+    return pack(r, g, bl)
+end
+
+pub fn lighten(p: int, pct: int) -> int is
+    return mix(p, 16777215, pct)
+end
+
+pub fn darken(p: int, pct: int) -> int is
+    return mix(p, 0, pct)
+end
+
+;; Colour of the opposite hue (same brightness).
+pub fn invert(p: int) -> int is
+    return pack(255 - red_of(p), 255 - green_of(p), 255 - blue_of(p))
+end
+
+;; Nearest xterm 256-colour index for an RGB colour.
+pub fn to_ansi256(r: int, g: int, b: int) -> int is
+    let rr: int = clamp(r)
+    let gg: int = clamp(g)
+    let bb: int = clamp(b)
+    if rr == gg && gg == bb is
+        if rr < 8 is return 16 end
+        if rr > 248 is return 231 end
+        return 232 + (rr - 8) * 24 / 247
+    end
+    let ri: int = (rr * 5 + 127) / 255
+    let gi: int = (gg * 5 + 127) / 255
+    let bi: int = (bb * 5 + 127) / 255
+    return 16 + 36 * ri + 6 * gi + bi
+end
+
+fn pal_r(i: int) -> int is
+    let t: [int] = [0, 205, 0, 205, 0, 205, 0, 229, 127, 255, 0, 255, 92, 255, 0, 255]
+    return t[i]
+end
+
+fn pal_g(i: int) -> int is
+    let t: [int] = [0, 0, 205, 205, 0, 0, 205, 229, 127, 0, 255, 255, 92, 0, 255, 255]
+    return t[i]
+end
+
+fn pal_b(i: int) -> int is
+    let t: [int] = [0, 0, 0, 0, 238, 205, 205, 229, 127, 0, 0, 0, 255, 255, 255, 255]
+    return t[i]
+end
+
+;; Nearest of the 16 classic terminal colours (index 0-15) for an RGB colour.
+pub fn to_ansi16(r: int, g: int, b: int) -> int is
+    let mut best: int = 0
+    let mut best_d: int = 999999999
+    let mut i: int = 0
+    while i < 16 is
+        let dr: int = r - pal_r(i)
+        let dg: int = g - pal_g(i)
+        let db: int = b - pal_b(i)
+        let d: int = dr * dr + dg * dg + db * db
+        if d < best_d is
+            best_d = d
+            best = i
+        end
+        i += 1
+    end
+    return best
+end
