@@ -1,0 +1,42 @@
+pub fn print_ansi() is
+    let names: [string] = colors_palette::ansi_names()
+    let mut i: int = 0
+    while i < array_len(names) is
+        write(colors_ansi::bg16(i, "   ") + " " + colors_ansi::fg16(i, colors_util::pad_right(names[i], 16)))
+        i += 1
+    end
+end
+
+;; one line per colour: swatch, name, hex value
+pub fn print_named() is
+    let names: [string] = colors_palette::named_names()
+    let mut i: int = 0
+    while i < array_len(names) is
+        let p: int = colors_palette::lookup(names[i])
+        write(colors_ansi::bg_packed(p, "     ") + " " + colors_ansi::fg_packed(p, colors_util::pad_right(names[i], 22)) + colors_convert::to_hex(p))
+        i += 1
+    end
+end
+
+pub fn print_all() is
+    write(colors_style::bold("terminal colours") + "  (" + colors_support::level_name() + ")")
+    print_ansi()
+    write("")
+    write(colors_style::bold("named colours"))
+    print_named()
+end
+
+;; the 256-colour table, 16 per row
+pub fn print_256() is
+    let mut n: int = 0
+    while n < 256 is
+        let mut row: string = ""
+        let mut c: int = 0
+        while c < 16 is
+            row = row + colors_ansi::bg256(n + c, " " + string_pad_right(to_string(n + c), 3))
+            c += 1
+        end
+        write(row)
+        n = n + 16
+    end
+end
