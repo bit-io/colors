@@ -1,0 +1,659 @@
+pub fn black(s: string) -> string is
+    return colors_ansi::fg16(0, s)
+end
+
+pub fn red(s: string) -> string is
+    return colors_ansi::fg16(1, s)
+end
+
+pub fn green(s: string) -> string is
+    return colors_ansi::fg16(2, s)
+end
+
+pub fn yellow(s: string) -> string is
+    return colors_ansi::fg16(3, s)
+end
+
+pub fn blue(s: string) -> string is
+    return colors_ansi::fg16(4, s)
+end
+
+pub fn magenta(s: string) -> string is
+    return colors_ansi::fg16(5, s)
+end
+
+pub fn cyan(s: string) -> string is
+    return colors_ansi::fg16(6, s)
+end
+
+pub fn white(s: string) -> string is
+    return colors_ansi::fg16(7, s)
+end
+
+pub fn bright_black(s: string) -> string is
+    return colors_ansi::fg16(8, s)
+end
+
+pub fn bright_red(s: string) -> string is
+    return colors_ansi::fg16(9, s)
+end
+
+pub fn bright_green(s: string) -> string is
+    return colors_ansi::fg16(10, s)
+end
+
+pub fn bright_yellow(s: string) -> string is
+    return colors_ansi::fg16(11, s)
+end
+
+pub fn bright_blue(s: string) -> string is
+    return colors_ansi::fg16(12, s)
+end
+
+pub fn bright_magenta(s: string) -> string is
+    return colors_ansi::fg16(13, s)
+end
+
+pub fn bright_cyan(s: string) -> string is
+    return colors_ansi::fg16(14, s)
+end
+
+pub fn bright_white(s: string) -> string is
+    return colors_ansi::fg16(15, s)
+end
+
+pub fn aliceblue(s: string) -> string is
+    return colors_ansi::fg_packed(15792383, s)
+end
+
+pub fn antiquewhite(s: string) -> string is
+    return colors_ansi::fg_packed(16444375, s)
+end
+
+pub fn aqua(s: string) -> string is
+    return colors_ansi::fg_packed(65535, s)
+end
+
+pub fn aquamarine(s: string) -> string is
+    return colors_ansi::fg_packed(8388564, s)
+end
+
+pub fn azure(s: string) -> string is
+    return colors_ansi::fg_packed(15794175, s)
+end
+
+pub fn beige(s: string) -> string is
+    return colors_ansi::fg_packed(16119260, s)
+end
+
+pub fn bisque(s: string) -> string is
+    return colors_ansi::fg_packed(16770244, s)
+end
+
+pub fn blanchedalmond(s: string) -> string is
+    return colors_ansi::fg_packed(16772045, s)
+end
+
+pub fn blueviolet(s: string) -> string is
+    return colors_ansi::fg_packed(9055202, s)
+end
+
+pub fn brown(s: string) -> string is
+    return colors_ansi::fg_packed(10824234, s)
+end
+
+pub fn burlywood(s: string) -> string is
+    return colors_ansi::fg_packed(14596231, s)
+end
+
+pub fn cadetblue(s: string) -> string is
+    return colors_ansi::fg_packed(6266528, s)
+end
+
+pub fn chartreuse(s: string) -> string is
+    return colors_ansi::fg_packed(8388352, s)
+end
+
+pub fn chocolate(s: string) -> string is
+    return colors_ansi::fg_packed(13789470, s)
+end
+
+pub fn coral(s: string) -> string is
+    return colors_ansi::fg_packed(16744272, s)
+end
+
+pub fn cornflowerblue(s: string) -> string is
+    return colors_ansi::fg_packed(6591981, s)
+end
+
+pub fn cornsilk(s: string) -> string is
+    return colors_ansi::fg_packed(16775388, s)
+end
+
+pub fn crimson(s: string) -> string is
+    return colors_ansi::fg_packed(14423100, s)
+end
+
+pub fn darkblue(s: string) -> string is
+    return colors_ansi::fg_packed(139, s)
+end
+
+pub fn darkcyan(s: string) -> string is
+    return colors_ansi::fg_packed(35723, s)
+end
+
+pub fn darkgoldenrod(s: string) -> string is
+    return colors_ansi::fg_packed(12092939, s)
+end
+
+pub fn darkgray(s: string) -> string is
+    return colors_ansi::fg_packed(11119017, s)
+end
+
+pub fn darkgreen(s: string) -> string is
+    return colors_ansi::fg_packed(25600, s)
+end
+
+pub fn darkgrey(s: string) -> string is
+    return colors_ansi::fg_packed(11119017, s)
+end
+
+pub fn darkkhaki(s: string) -> string is
+    return colors_ansi::fg_packed(12433259, s)
+end
+
+pub fn darkmagenta(s: string) -> string is
+    return colors_ansi::fg_packed(9109643, s)
+end
+
+pub fn darkolivegreen(s: string) -> string is
+    return colors_ansi::fg_packed(5597999, s)
+end
+
+pub fn darkorange(s: string) -> string is
+    return colors_ansi::fg_packed(16747520, s)
+end
+
+pub fn darkorchid(s: string) -> string is
+    return colors_ansi::fg_packed(10040012, s)
+end
+
+pub fn darkred(s: string) -> string is
+    return colors_ansi::fg_packed(9109504, s)
+end
+
+pub fn darksalmon(s: string) -> string is
+    return colors_ansi::fg_packed(15308410, s)
+end
+
+pub fn darkseagreen(s: string) -> string is
+    return colors_ansi::fg_packed(9419919, s)
+end
+
+pub fn darkslateblue(s: string) -> string is
+    return colors_ansi::fg_packed(4734347, s)
+end
+
+pub fn darkslategray(s: string) -> string is
+    return colors_ansi::fg_packed(3100495, s)
+end
+
+pub fn darkslategrey(s: string) -> string is
+    return colors_ansi::fg_packed(3100495, s)
+end
+
+pub fn darkturquoise(s: string) -> string is
+    return colors_ansi::fg_packed(52945, s)
+end
+
+pub fn darkviolet(s: string) -> string is
+    return colors_ansi::fg_packed(9699539, s)
+end
+
+pub fn deeppink(s: string) -> string is
+    return colors_ansi::fg_packed(16716947, s)
+end
+
+pub fn deepskyblue(s: string) -> string is
+    return colors_ansi::fg_packed(49151, s)
+end
+
+pub fn dimgray(s: string) -> string is
+    return colors_ansi::fg_packed(6908265, s)
+end
+
+pub fn dimgrey(s: string) -> string is
+    return colors_ansi::fg_packed(6908265, s)
+end
+
+pub fn dodgerblue(s: string) -> string is
+    return colors_ansi::fg_packed(2003199, s)
+end
+
+pub fn firebrick(s: string) -> string is
+    return colors_ansi::fg_packed(11674146, s)
+end
+
+pub fn floralwhite(s: string) -> string is
+    return colors_ansi::fg_packed(16775920, s)
+end
+
+pub fn forestgreen(s: string) -> string is
+    return colors_ansi::fg_packed(2263842, s)
+end
+
+pub fn fuchsia(s: string) -> string is
+    return colors_ansi::fg_packed(16711935, s)
+end
+
+pub fn gainsboro(s: string) -> string is
+    return colors_ansi::fg_packed(14474460, s)
+end
+
+pub fn ghostwhite(s: string) -> string is
+    return colors_ansi::fg_packed(16316671, s)
+end
+
+pub fn gold(s: string) -> string is
+    return colors_ansi::fg_packed(16766720, s)
+end
+
+pub fn goldenrod(s: string) -> string is
+    return colors_ansi::fg_packed(14329120, s)
+end
+
+pub fn gray(s: string) -> string is
+    return colors_ansi::fg_packed(8421504, s)
+end
+
+pub fn grey(s: string) -> string is
+    return colors_ansi::fg_packed(8421504, s)
+end
+
+pub fn greenyellow(s: string) -> string is
+    return colors_ansi::fg_packed(11403055, s)
+end
+
+pub fn honeydew(s: string) -> string is
+    return colors_ansi::fg_packed(15794160, s)
+end
+
+pub fn hotpink(s: string) -> string is
+    return colors_ansi::fg_packed(16738740, s)
+end
+
+pub fn indianred(s: string) -> string is
+    return colors_ansi::fg_packed(13458524, s)
+end
+
+pub fn indigo(s: string) -> string is
+    return colors_ansi::fg_packed(4915330, s)
+end
+
+pub fn ivory(s: string) -> string is
+    return colors_ansi::fg_packed(16777200, s)
+end
+
+pub fn khaki(s: string) -> string is
+    return colors_ansi::fg_packed(15787660, s)
+end
+
+pub fn lavender(s: string) -> string is
+    return colors_ansi::fg_packed(15132410, s)
+end
+
+pub fn lavenderblush(s: string) -> string is
+    return colors_ansi::fg_packed(16773365, s)
+end
+
+pub fn lawngreen(s: string) -> string is
+    return colors_ansi::fg_packed(8190976, s)
+end
+
+pub fn lemonchiffon(s: string) -> string is
+    return colors_ansi::fg_packed(16775885, s)
+end
+
+pub fn lightblue(s: string) -> string is
+    return colors_ansi::fg_packed(11393254, s)
+end
+
+pub fn lightcoral(s: string) -> string is
+    return colors_ansi::fg_packed(15761536, s)
+end
+
+pub fn lightcyan(s: string) -> string is
+    return colors_ansi::fg_packed(14745599, s)
+end
+
+pub fn lightgoldenrodyellow(s: string) -> string is
+    return colors_ansi::fg_packed(16448210, s)
+end
+
+pub fn lightgray(s: string) -> string is
+    return colors_ansi::fg_packed(13882323, s)
+end
+
+pub fn lightgreen(s: string) -> string is
+    return colors_ansi::fg_packed(9498256, s)
+end
+
+pub fn lightgrey(s: string) -> string is
+    return colors_ansi::fg_packed(13882323, s)
+end
+
+pub fn lightpink(s: string) -> string is
+    return colors_ansi::fg_packed(16758465, s)
+end
+
+pub fn lightsalmon(s: string) -> string is
+    return colors_ansi::fg_packed(16752762, s)
+end
+
+pub fn lightseagreen(s: string) -> string is
+    return colors_ansi::fg_packed(2142890, s)
+end
+
+pub fn lightskyblue(s: string) -> string is
+    return colors_ansi::fg_packed(8900346, s)
+end
+
+pub fn lightslategray(s: string) -> string is
+    return colors_ansi::fg_packed(7833753, s)
+end
+
+pub fn lightslategrey(s: string) -> string is
+    return colors_ansi::fg_packed(7833753, s)
+end
+
+pub fn lightsteelblue(s: string) -> string is
+    return colors_ansi::fg_packed(11584734, s)
+end
+
+pub fn lightyellow(s: string) -> string is
+    return colors_ansi::fg_packed(16777184, s)
+end
+
+pub fn lime(s: string) -> string is
+    return colors_ansi::fg_packed(65280, s)
+end
+
+pub fn limegreen(s: string) -> string is
+    return colors_ansi::fg_packed(3329330, s)
+end
+
+pub fn linen(s: string) -> string is
+    return colors_ansi::fg_packed(16445670, s)
+end
+
+pub fn maroon(s: string) -> string is
+    return colors_ansi::fg_packed(8388608, s)
+end
+
+pub fn mediumaquamarine(s: string) -> string is
+    return colors_ansi::fg_packed(6737322, s)
+end
+
+pub fn mediumblue(s: string) -> string is
+    return colors_ansi::fg_packed(205, s)
+end
+
+pub fn mediumorchid(s: string) -> string is
+    return colors_ansi::fg_packed(12211667, s)
+end
+
+pub fn mediumpurple(s: string) -> string is
+    return colors_ansi::fg_packed(9662683, s)
+end
+
+pub fn mediumseagreen(s: string) -> string is
+    return colors_ansi::fg_packed(3978097, s)
+end
+
+pub fn mediumslateblue(s: string) -> string is
+    return colors_ansi::fg_packed(8087790, s)
+end
+
+pub fn mediumspringgreen(s: string) -> string is
+    return colors_ansi::fg_packed(64154, s)
+end
+
+pub fn mediumturquoise(s: string) -> string is
+    return colors_ansi::fg_packed(4772300, s)
+end
+
+pub fn mediumvioletred(s: string) -> string is
+    return colors_ansi::fg_packed(13047173, s)
+end
+
+pub fn midnightblue(s: string) -> string is
+    return colors_ansi::fg_packed(1644912, s)
+end
+
+pub fn mintcream(s: string) -> string is
+    return colors_ansi::fg_packed(16121850, s)
+end
+
+pub fn mistyrose(s: string) -> string is
+    return colors_ansi::fg_packed(16770273, s)
+end
+
+pub fn moccasin(s: string) -> string is
+    return colors_ansi::fg_packed(16770229, s)
+end
+
+pub fn navajowhite(s: string) -> string is
+    return colors_ansi::fg_packed(16768685, s)
+end
+
+pub fn navy(s: string) -> string is
+    return colors_ansi::fg_packed(128, s)
+end
+
+pub fn oldlace(s: string) -> string is
+    return colors_ansi::fg_packed(16643558, s)
+end
+
+pub fn olive(s: string) -> string is
+    return colors_ansi::fg_packed(8421376, s)
+end
+
+pub fn olivedrab(s: string) -> string is
+    return colors_ansi::fg_packed(7048739, s)
+end
+
+pub fn orange(s: string) -> string is
+    return colors_ansi::fg_packed(16753920, s)
+end
+
+pub fn orangered(s: string) -> string is
+    return colors_ansi::fg_packed(16729344, s)
+end
+
+pub fn orchid(s: string) -> string is
+    return colors_ansi::fg_packed(14315734, s)
+end
+
+pub fn palegoldenrod(s: string) -> string is
+    return colors_ansi::fg_packed(15657130, s)
+end
+
+pub fn palegreen(s: string) -> string is
+    return colors_ansi::fg_packed(10025880, s)
+end
+
+pub fn paleturquoise(s: string) -> string is
+    return colors_ansi::fg_packed(11529966, s)
+end
+
+pub fn palevioletred(s: string) -> string is
+    return colors_ansi::fg_packed(14381203, s)
+end
+
+pub fn papayawhip(s: string) -> string is
+    return colors_ansi::fg_packed(16773077, s)
+end
+
+pub fn peachpuff(s: string) -> string is
+    return colors_ansi::fg_packed(16767673, s)
+end
+
+pub fn peru(s: string) -> string is
+    return colors_ansi::fg_packed(13468991, s)
+end
+
+pub fn pink(s: string) -> string is
+    return colors_ansi::fg_packed(16761035, s)
+end
+
+pub fn plum(s: string) -> string is
+    return colors_ansi::fg_packed(14524637, s)
+end
+
+pub fn powderblue(s: string) -> string is
+    return colors_ansi::fg_packed(11591910, s)
+end
+
+pub fn purple(s: string) -> string is
+    return colors_ansi::fg_packed(8388736, s)
+end
+
+pub fn rebeccapurple(s: string) -> string is
+    return colors_ansi::fg_packed(6697881, s)
+end
+
+pub fn rosybrown(s: string) -> string is
+    return colors_ansi::fg_packed(12357519, s)
+end
+
+pub fn royalblue(s: string) -> string is
+    return colors_ansi::fg_packed(4286945, s)
+end
+
+pub fn saddlebrown(s: string) -> string is
+    return colors_ansi::fg_packed(9127187, s)
+end
+
+pub fn salmon(s: string) -> string is
+    return colors_ansi::fg_packed(16416882, s)
+end
+
+pub fn sandybrown(s: string) -> string is
+    return colors_ansi::fg_packed(16032864, s)
+end
+
+pub fn seagreen(s: string) -> string is
+    return colors_ansi::fg_packed(3050327, s)
+end
+
+pub fn seashell(s: string) -> string is
+    return colors_ansi::fg_packed(16774638, s)
+end
+
+pub fn sienna(s: string) -> string is
+    return colors_ansi::fg_packed(10506797, s)
+end
+
+pub fn silver(s: string) -> string is
+    return colors_ansi::fg_packed(12632256, s)
+end
+
+pub fn skyblue(s: string) -> string is
+    return colors_ansi::fg_packed(8900331, s)
+end
+
+pub fn slateblue(s: string) -> string is
+    return colors_ansi::fg_packed(6970061, s)
+end
+
+pub fn slategray(s: string) -> string is
+    return colors_ansi::fg_packed(7372944, s)
+end
+
+pub fn slategrey(s: string) -> string is
+    return colors_ansi::fg_packed(7372944, s)
+end
+
+pub fn snow(s: string) -> string is
+    return colors_ansi::fg_packed(16775930, s)
+end
+
+pub fn springgreen(s: string) -> string is
+    return colors_ansi::fg_packed(65407, s)
+end
+
+pub fn steelblue(s: string) -> string is
+    return colors_ansi::fg_packed(4620980, s)
+end
+
+pub fn tan(s: string) -> string is
+    return colors_ansi::fg_packed(13808780, s)
+end
+
+pub fn teal(s: string) -> string is
+    return colors_ansi::fg_packed(32896, s)
+end
+
+pub fn thistle(s: string) -> string is
+    return colors_ansi::fg_packed(14204888, s)
+end
+
+pub fn tomato(s: string) -> string is
+    return colors_ansi::fg_packed(16737095, s)
+end
+
+pub fn turquoise(s: string) -> string is
+    return colors_ansi::fg_packed(4251856, s)
+end
+
+pub fn violet(s: string) -> string is
+    return colors_ansi::fg_packed(15631086, s)
+end
+
+pub fn wheat(s: string) -> string is
+    return colors_ansi::fg_packed(16113331, s)
+end
+
+pub fn whitesmoke(s: string) -> string is
+    return colors_ansi::fg_packed(16119285, s)
+end
+
+pub fn yellowgreen(s: string) -> string is
+    return colors_ansi::fg_packed(10145074, s)
+end
+
+pub fn amber(s: string) -> string is
+    return colors_ansi::fg_packed(16760576, s)
+end
+
+pub fn mint(s: string) -> string is
+    return colors_ansi::fg_packed(4109449, s)
+end
+
+pub fn peach(s: string) -> string is
+    return colors_ansi::fg_packed(16763812, s)
+end
+
+pub fn rose(s: string) -> string is
+    return colors_ansi::fg_packed(16711807, s)
+end
+
+pub fn sand(s: string) -> string is
+    return colors_ansi::fg_packed(12759680, s)
+end
+
+pub fn lilac(s: string) -> string is
+    return colors_ansi::fg_packed(13148872, s)
+end
+
+pub fn slate(s: string) -> string is
+    return colors_ansi::fg_packed(6583435, s)
+end
+
+pub fn charcoal(s: string) -> string is
+    return colors_ansi::fg_packed(3556687, s)
+end
+
+pub fn named(name: string, s: string) -> string is
+    return colors_ansi::fg_name(name, s)
+end
