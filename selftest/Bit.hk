@@ -1,0 +1,8 @@
+[package]
+-> name        => colors-selftest
+-> version     => 0.1.0
+-> description => Test-suite of the `colors` library (a separate project that depends on it)
+-> lang        => h#
+
+[dependencies]
+-> colors => path ..
