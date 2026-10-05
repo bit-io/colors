@@ -1,0 +1,246 @@
+pub fn normalize(name: string) -> string is
+    let mut n: string = string_lower(string_trim(name))
+    n = string_replace(n, "_", "")
+    n = string_replace(n, "-", "")
+    n = string_replace(n, " ", "")
+    return n
+end
+
+pub fn ansi_index(name: string) -> int is
+    let n: string = normalize(name)
+    if n == "black" is return 0 end
+    if n == "red" is return 1 end
+    if n == "green" is return 2 end
+    if n == "yellow" is return 3 end
+    if n == "blue" is return 4 end
+    if n == "magenta" is return 5 end
+    if n == "cyan" is return 6 end
+    if n == "white" is return 7 end
+    if n == "brightblack" is return 8 end
+    if n == "brightred" is return 9 end
+    if n == "brightgreen" is return 10 end
+    if n == "brightyellow" is return 11 end
+    if n == "brightblue" is return 12 end
+    if n == "brightmagenta" is return 13 end
+    if n == "brightcyan" is return 14 end
+    if n == "brightwhite" is return 15 end
+    return -1
+end
+
+pub fn lookup(name: string) -> int is
+    let n: string = normalize(name)
+    if n == "aliceblue" is return 15792383 end
+    if n == "antiquewhite" is return 16444375 end
+    if n == "aqua" is return 65535 end
+    if n == "aquamarine" is return 8388564 end
+    if n == "azure" is return 15794175 end
+    if n == "beige" is return 16119260 end
+    if n == "bisque" is return 16770244 end
+    if n == "blanchedalmond" is return 16772045 end
+    if n == "blueviolet" is return 9055202 end
+    if n == "brown" is return 10824234 end
+    if n == "burlywood" is return 14596231 end
+    if n == "cadetblue" is return 6266528 end
+    if n == "chartreuse" is return 8388352 end
+    if n == "chocolate" is return 13789470 end
+    if n == "coral" is return 16744272 end
+    if n == "cornflowerblue" is return 6591981 end
+    if n == "cornsilk" is return 16775388 end
+    if n == "crimson" is return 14423100 end
+    if n == "darkblue" is return 139 end
+    if n == "darkcyan" is return 35723 end
+    if n == "darkgoldenrod" is return 12092939 end
+    if n == "darkgray" is return 11119017 end
+    if n == "darkgreen" is return 25600 end
+    if n == "darkgrey" is return 11119017 end
+    if n == "darkkhaki" is return 12433259 end
+    if n == "darkmagenta" is return 9109643 end
+    if n == "darkolivegreen" is return 5597999 end
+    if n == "darkorange" is return 16747520 end
+    if n == "darkorchid" is return 10040012 end
+    if n == "darkred" is return 9109504 end
+    if n == "darksalmon" is return 15308410 end
+    if n == "darkseagreen" is return 9419919 end
+    if n == "darkslateblue" is return 4734347 end
+    if n == "darkslategray" is return 3100495 end
+    if n == "darkslategrey" is return 3100495 end
+    if n == "darkturquoise" is return 52945 end
+    if n == "darkviolet" is return 9699539 end
+    if n == "deeppink" is return 16716947 end
+    if n == "deepskyblue" is return 49151 end
+    if n == "dimgray" is return 6908265 end
+    if n == "dimgrey" is return 6908265 end
+    if n == "dodgerblue" is return 2003199 end
+    if n == "firebrick" is return 11674146 end
+    if n == "floralwhite" is return 16775920 end
+    if n == "forestgreen" is return 2263842 end
+    if n == "fuchsia" is return 16711935 end
+    if n == "gainsboro" is return 14474460 end
+    if n == "ghostwhite" is return 16316671 end
+    if n == "gold" is return 16766720 end
+    if n == "goldenrod" is return 14329120 end
+    if n == "gray" is return 8421504 end
+    if n == "grey" is return 8421504 end
+    if n == "greenyellow" is return 11403055 end
+    if n == "honeydew" is return 15794160 end
+    if n == "hotpink" is return 16738740 end
+    if n == "indianred" is return 13458524 end
+    if n == "indigo" is return 4915330 end
+    if n == "ivory" is return 16777200 end
+    if n == "khaki" is return 15787660 end
+    if n == "lavender" is return 15132410 end
+    if n == "lavenderblush" is return 16773365 end
+    if n == "lawngreen" is return 8190976 end
+    if n == "lemonchiffon" is return 16775885 end
+    if n == "lightblue" is return 11393254 end
+    if n == "lightcoral" is return 15761536 end
+    if n == "lightcyan" is return 14745599 end
+    if n == "lightgoldenrodyellow" is return 16448210 end
+    if n == "lightgray" is return 13882323 end
+    if n == "lightgreen" is return 9498256 end
+    if n == "lightgrey" is return 13882323 end
+    if n == "lightpink" is return 16758465 end
+    if n == "lightsalmon" is return 16752762 end
+    if n == "lightseagreen" is return 2142890 end
+    if n == "lightskyblue" is return 8900346 end
+    if n == "lightslategray" is return 7833753 end
+    if n == "lightslategrey" is return 7833753 end
+    if n == "lightsteelblue" is return 11584734 end
+    if n == "lightyellow" is return 16777184 end
+    if n == "lime" is return 65280 end
+    if n == "limegreen" is return 3329330 end
+    if n == "linen" is return 16445670 end
+    if n == "maroon" is return 8388608 end
+    if n == "mediumaquamarine" is return 6737322 end
+    if n == "mediumblue" is return 205 end
+    if n == "mediumorchid" is return 12211667 end
+    if n == "mediumpurple" is return 9662683 end
+    if n == "mediumseagreen" is return 3978097 end
+    if n == "mediumslateblue" is return 8087790 end
+    if n == "mediumspringgreen" is return 64154 end
+    if n == "mediumturquoise" is return 4772300 end
+    if n == "mediumvioletred" is return 13047173 end
+    if n == "midnightblue" is return 1644912 end
+    if n == "mintcream" is return 16121850 end
+    if n == "mistyrose" is return 16770273 end
+    if n == "moccasin" is return 16770229 end
+    if n == "navajowhite" is return 16768685 end
+    if n == "navy" is return 128 end
+    if n == "oldlace" is return 16643558 end
+    if n == "olive" is return 8421376 end
+    if n == "olivedrab" is return 7048739 end
+    if n == "orange" is return 16753920 end
+    if n == "orangered" is return 16729344 end
+    if n == "orchid" is return 14315734 end
+    if n == "palegoldenrod" is return 15657130 end
+    if n == "palegreen" is return 10025880 end
+    if n == "paleturquoise" is return 11529966 end
+    if n == "palevioletred" is return 14381203 end
+    if n == "papayawhip" is return 16773077 end
+    if n == "peachpuff" is return 16767673 end
+    if n == "peru" is return 13468991 end
+    if n == "pink" is return 16761035 end
+    if n == "plum" is return 14524637 end
+    if n == "powderblue" is return 11591910 end
+    if n == "purple" is return 8388736 end
+    if n == "rebeccapurple" is return 6697881 end
+    if n == "rosybrown" is return 12357519 end
+    if n == "royalblue" is return 4286945 end
+    if n == "saddlebrown" is return 9127187 end
+    if n == "salmon" is return 16416882 end
+    if n == "sandybrown" is return 16032864 end
+    if n == "seagreen" is return 3050327 end
+    if n == "seashell" is return 16774638 end
+    if n == "sienna" is return 10506797 end
+    if n == "silver" is return 12632256 end
+    if n == "skyblue" is return 8900331 end
+    if n == "slateblue" is return 6970061 end
+    if n == "slategray" is return 7372944 end
+    if n == "slategrey" is return 7372944 end
+    if n == "snow" is return 16775930 end
+    if n == "springgreen" is return 65407 end
+    if n == "steelblue" is return 4620980 end
+    if n == "tan" is return 13808780 end
+    if n == "teal" is return 32896 end
+    if n == "thistle" is return 14204888 end
+    if n == "tomato" is return 16737095 end
+    if n == "turquoise" is return 4251856 end
+    if n == "violet" is return 15631086 end
+    if n == "wheat" is return 16113331 end
+    if n == "whitesmoke" is return 16119285 end
+    if n == "yellowgreen" is return 10145074 end
+    if n == "amber" is return 16760576 end
+    if n == "mint" is return 4109449 end
+    if n == "peach" is return 16763812 end
+    if n == "rose" is return 16711807 end
+    if n == "sand" is return 12759680 end
+    if n == "lilac" is return 13148872 end
+    if n == "slate" is return 6583435 end
+    if n == "charcoal" is return 3556687 end
+    return -1
+end
+
+pub fn ansi_count() -> int is
+    return 16
+end
+
+pub fn named_count() -> int is
+    return 148
+end
+
+pub fn count() -> int is
+    return 164
+end
+
+pub fn ansi_names() -> [string] is
+    return ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white", "bright_black", "bright_red", "bright_green", "bright_yellow", "bright_blue", "bright_magenta", "bright_cyan", "bright_white"]
+end
+
+fn names_0() -> [string] is
+    return ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "blanchedalmond", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "darkblue", "darkcyan"]
+end
+
+fn names_1() -> [string] is
+    return ["darkgoldenrod", "darkgray", "darkgreen", "darkgrey", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkslategrey", "darkturquoise", "darkviolet", "deeppink", "deepskyblue", "dimgray"]
+end
+
+fn names_2() -> [string] is
+    return ["dimgrey", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite", "gold", "goldenrod", "gray", "grey", "greenyellow", "honeydew", "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender"]
+end
+
+fn names_3() -> [string] is
+    return ["lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral", "lightcyan", "lightgoldenrodyellow", "lightgray", "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen", "lightskyblue", "lightslategray", "lightslategrey", "lightsteelblue", "lightyellow", "lime", "limegreen"]
+end
+
+fn names_4() -> [string] is
+    return ["linen", "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin", "navajowhite", "navy", "oldlace", "olive", "olivedrab"]
+end
+
+fn names_5() -> [string] is
+    return ["orange", "orangered", "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue", "purple", "rebeccapurple", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown"]
+end
+
+fn names_6() -> [string] is
+    return ["seagreen", "seashell", "sienna", "silver", "skyblue", "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "whitesmoke", "yellowgreen"]
+end
+
+fn names_7() -> [string] is
+    return ["amber", "mint", "peach", "rose", "sand", "lilac", "slate", "charcoal"]
+end
+
+pub fn named_names() -> [string] is
+    let mut out: [string] = []
+    out = array_concat(out, names_0())
+    out = array_concat(out, names_1())
+    out = array_concat(out, names_2())
+    out = array_concat(out, names_3())
+    out = array_concat(out, names_4())
+    out = array_concat(out, names_5())
+    out = array_concat(out, names_6())
+    out = array_concat(out, names_7())
+    return out
+end
+
+pub fn all_names() -> [string] is
+    return array_concat(ansi_names(), named_names())
+end
